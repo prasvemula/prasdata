@@ -1,0 +1,172 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "PrashanthVemula"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage3_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage4_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage5_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase3_connectionString": {
+			"value": ""
+		},
+		"AzureTableStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureTableStorage2_connectionString": {
+			"value": ""
+		},
+		"SHIRForBlob_connectionString": {
+			"value": ""
+		},
+		"SQLSERVERForMindTree_connectionString": {
+			"value": "Integrated Security=True;Data Source=C1CSSML63297;Initial Catalog=AzureSelfHosted"
+		},
+		"SQLSERVERForMindTree_password": {
+			"value": ""
+		},
+		"SelfHostedSQLServer_connectionString": {
+			"value": "Integrated Security=True;Data Source=C1CSSML63297;Initial Catalog=AzureSelfHosted"
+		},
+		"SelfHostedSQLServer_password": {
+			"value": ""
+		},
+		"SqlServer3_connectionString": {
+			"value": "Integrated Security=True;Data Source=C1CSSML63297;Initial Catalog=AzureSelfHosted"
+		},
+		"SqlServer3_password": {
+			"value": ""
+		},
+		"SqlServer4_connectionString": {
+			"value": "Integrated Security=True;Data Source=CDCVM;Initial Catalog=prasreproduce"
+		},
+		"SqlServer4_password": {
+			"value": ""
+		},
+		"AzureDataExplorer1_properties_typeProperties_endpoint": {
+			"value": "https://praskusto.eastus.kusto.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"value": "yuvacase"
+		},
+		"AzureDataExplorer2_properties_typeProperties_endpoint": {
+			"value": "https://praskusto.eastus.kusto.windows.net"
+		},
+		"AzureDataExplorer2_properties_typeProperties_database": {
+			"value": "yuvacase"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://prasreproduce.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://prasKeyvault.vault.azure.net/"
+		},
+		"SQLSERVERForMindTree_properties_typeProperties_userName": {
+			"value": "MINDTREE\\M1094492"
+		},
+		"SelfHostedSQLServer_properties_typeProperties_userName": {
+			"value": "MINDTREE\\M1094492"
+		},
+		"SqlServer1_properties_typeProperties_connectionString_secretName": {
+			"value": "NewKeyforSSMS"
+		},
+		"SqlServer1_properties_typeProperties_userName": {
+			"value": "prashanth"
+		},
+		"SqlServer3_properties_typeProperties_userName": {
+			"value": "MINDTREE\\M1094492"
+		},
+		"SqlServer4_properties_typeProperties_userName": {
+			"value": "prashanth"
+		},
+		"trigger1_properties_pipeline6_parameters_FileName": {
+			"value": "@triggerBody().FileName"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prashanthdemo"
+		},
+		"trigger2_properties_typeProperties_scope": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prasreproduce"
+		},
+		"trigger3_properties_typeProperties_scope": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prasreproduce"
+		},
+		"AzureBlobStorage311_properties_privateLinkResourceId": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prashanthdemo"
+		},
+		"AzureBlobStorage311_properties_groupId": {
+			"value": "blob"
+		},
+		"AzureBlobStorage311_properties_fqdns": {
+			"value": [
+				"prashanthdemo.blob.core.windows.net"
+			]
+		},
+		"AzureDataLakeStorage494_properties_privateLinkResourceId": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prasreproduce"
+		},
+		"AzureDataLakeStorage494_properties_groupId": {
+			"value": "dfs"
+		},
+		"AzureDataLakeStorage494_properties_fqdns": {
+			"value": [
+				"prasreproduce.dfs.core.windows.net"
+			]
+		},
+		"AzureDataLakeStorage573_properties_privateLinkResourceId": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prashanthdemo"
+		},
+		"AzureDataLakeStorage573_properties_groupId": {
+			"value": "dfs"
+		},
+		"AzureDataLakeStorage573_properties_fqdns": {
+			"value": [
+				"prashanthdemo.dfs.core.windows.net"
+			]
+		},
+		"AzureDataLakeStorage923_properties_privateLinkResourceId": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/PrasDeployOne/providers/Microsoft.Storage/storageAccounts/prasdeplyone"
+		},
+		"AzureDataLakeStorage923_properties_groupId": {
+			"value": "dfs"
+		},
+		"AzureDataLakeStorage923_properties_fqdns": {
+			"value": [
+				"prasdeplyone.dfs.core.windows.net"
+			]
+		},
+		"AzureSqlDatabase197_properties_privateLinkResourceId": {
+			"value": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Sql/servers/prashanthreprosql"
+		},
+		"AzureSqlDatabase197_properties_groupId": {
+			"value": "sqlServer"
+		},
+		"AzureSqlDatabase197_properties_fqdns": {
+			"value": [
+				"prashanthreprosql.database.windows.net"
+			]
+		},
+		"default_properties_adfprameter_value": {
+			"value": "prashanth"
+		}
+	}
+}

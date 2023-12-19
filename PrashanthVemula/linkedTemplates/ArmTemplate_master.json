@@ -1,0 +1,513 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "PrashanthVemula"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureBlobStorage3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage3'"
+		},
+		"AzureBlobStorage4_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage4'"
+		},
+		"AzureBlobStorage5_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage5'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
+		"AzureSqlDatabase3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase3'"
+		},
+		"AzureTableStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
+		},
+		"AzureTableStorage2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage2'"
+		},
+		"SHIRForBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SHIRForBlob'"
+		},
+		"SQLSERVERForMindTree_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SQLSERVERForMindTree'",
+			"defaultValue": "Integrated Security=True;Data Source=C1CSSML63297;Initial Catalog=AzureSelfHosted"
+		},
+		"SQLSERVERForMindTree_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SQLSERVERForMindTree'"
+		},
+		"SelfHostedSQLServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SelfHostedSQLServer'",
+			"defaultValue": "Integrated Security=True;Data Source=C1CSSML63297;Initial Catalog=AzureSelfHosted"
+		},
+		"SelfHostedSQLServer_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SelfHostedSQLServer'"
+		},
+		"SqlServer3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer3'",
+			"defaultValue": "Integrated Security=True;Data Source=C1CSSML63297;Initial Catalog=AzureSelfHosted"
+		},
+		"SqlServer3_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SqlServer3'"
+		},
+		"SqlServer4_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServer4'",
+			"defaultValue": "Integrated Security=True;Data Source=CDCVM;Initial Catalog=prasreproduce"
+		},
+		"SqlServer4_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SqlServer4'"
+		},
+		"AzureDataExplorer1_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "https://praskusto.eastus.kusto.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "yuvacase"
+		},
+		"AzureDataExplorer2_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "https://praskusto.eastus.kusto.windows.net"
+		},
+		"AzureDataExplorer2_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "yuvacase"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://prasreproduce.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://prasKeyvault.vault.azure.net/"
+		},
+		"SQLSERVERForMindTree_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "MINDTREE\\M1094492"
+		},
+		"SelfHostedSQLServer_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "MINDTREE\\M1094492"
+		},
+		"SqlServer1_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "NewKeyforSSMS"
+		},
+		"SqlServer1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "prashanth"
+		},
+		"SqlServer3_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "MINDTREE\\M1094492"
+		},
+		"SqlServer4_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "prashanth"
+		},
+		"trigger1_properties_pipeline6_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().FileName"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prashanthdemo"
+		},
+		"trigger2_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prasreproduce"
+		},
+		"trigger3_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prasreproduce"
+		},
+		"AzureBlobStorage311_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prashanthdemo"
+		},
+		"AzureBlobStorage311_properties_groupId": {
+			"type": "string",
+			"defaultValue": "blob"
+		},
+		"AzureBlobStorage311_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"prashanthdemo.blob.core.windows.net"
+			]
+		},
+		"AzureDataLakeStorage494_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prasreproduce"
+		},
+		"AzureDataLakeStorage494_properties_groupId": {
+			"type": "string",
+			"defaultValue": "dfs"
+		},
+		"AzureDataLakeStorage494_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"prasreproduce.dfs.core.windows.net"
+			]
+		},
+		"AzureDataLakeStorage573_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Storage/storageAccounts/prashanthdemo"
+		},
+		"AzureDataLakeStorage573_properties_groupId": {
+			"type": "string",
+			"defaultValue": "dfs"
+		},
+		"AzureDataLakeStorage573_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"prashanthdemo.dfs.core.windows.net"
+			]
+		},
+		"AzureDataLakeStorage923_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/PrasDeployOne/providers/Microsoft.Storage/storageAccounts/prasdeplyone"
+		},
+		"AzureDataLakeStorage923_properties_groupId": {
+			"type": "string",
+			"defaultValue": "dfs"
+		},
+		"AzureDataLakeStorage923_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"prasdeplyone.dfs.core.windows.net"
+			]
+		},
+		"AzureSqlDatabase197_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/prashanthdailywork/providers/Microsoft.Sql/servers/prashanthreprosql"
+		},
+		"AzureSqlDatabase197_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
+		"AzureSqlDatabase197_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"prashanthreprosql.database.windows.net"
+			]
+		},
+		"default_properties_adfprameter_value": {
+			"type": "string",
+			"defaultValue": "prashanth"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "PrashanthVemula_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage1_connectionString": {
+						"value": "[parameters('AzureBlobStorage1_connectionString')]"
+					},
+					"AzureBlobStorage5_connectionString": {
+						"value": "[parameters('AzureBlobStorage5_connectionString')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"AzureSqlDatabase3_connectionString": {
+						"value": "[parameters('AzureSqlDatabase3_connectionString')]"
+					},
+					"AzureTableStorage1_connectionString": {
+						"value": "[parameters('AzureTableStorage1_connectionString')]"
+					},
+					"AzureTableStorage2_connectionString": {
+						"value": "[parameters('AzureTableStorage2_connectionString')]"
+					},
+					"default_properties_adfprameter_value": {
+						"value": "[parameters('default_properties_adfprameter_value')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_endpoint": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_endpoint')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_database": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_database')]"
+					},
+					"AzureDataExplorer2_properties_typeProperties_endpoint": {
+						"value": "[parameters('AzureDataExplorer2_properties_typeProperties_endpoint')]"
+					},
+					"AzureDataExplorer2_properties_typeProperties_database": {
+						"value": "[parameters('AzureDataExplorer2_properties_typeProperties_database')]"
+					},
+					"AzureKeyVault1_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					},
+					"trigger3_properties_typeProperties_scope": {
+						"value": "[parameters('trigger3_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "PrashanthVemula_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'PrashanthVemula_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "PrashanthVemula_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'PrashanthVemula_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "PrashanthVemula_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage4_connectionString": {
+						"value": "[parameters('AzureBlobStorage4_connectionString')]"
+					},
+					"SHIRForBlob_connectionString": {
+						"value": "[parameters('SHIRForBlob_connectionString')]"
+					},
+					"SQLSERVERForMindTree_connectionString": {
+						"value": "[parameters('SQLSERVERForMindTree_connectionString')]"
+					},
+					"SQLSERVERForMindTree_password": {
+						"value": "[parameters('SQLSERVERForMindTree_password')]"
+					},
+					"SelfHostedSQLServer_connectionString": {
+						"value": "[parameters('SelfHostedSQLServer_connectionString')]"
+					},
+					"SelfHostedSQLServer_password": {
+						"value": "[parameters('SelfHostedSQLServer_password')]"
+					},
+					"SqlServer4_connectionString": {
+						"value": "[parameters('SqlServer4_connectionString')]"
+					},
+					"SqlServer4_password": {
+						"value": "[parameters('SqlServer4_password')]"
+					},
+					"SQLSERVERForMindTree_properties_typeProperties_userName": {
+						"value": "[parameters('SQLSERVERForMindTree_properties_typeProperties_userName')]"
+					},
+					"SelfHostedSQLServer_properties_typeProperties_userName": {
+						"value": "[parameters('SelfHostedSQLServer_properties_typeProperties_userName')]"
+					},
+					"SqlServer1_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('SqlServer1_properties_typeProperties_connectionString_secretName')]"
+					},
+					"SqlServer1_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServer1_properties_typeProperties_userName')]"
+					},
+					"SqlServer4_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServer4_properties_typeProperties_userName')]"
+					},
+					"AzureBlobStorage311_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureBlobStorage311_properties_privateLinkResourceId')]"
+					},
+					"AzureBlobStorage311_properties_groupId": {
+						"value": "[parameters('AzureBlobStorage311_properties_groupId')]"
+					},
+					"AzureBlobStorage311_properties_fqdns": {
+						"value": "[parameters('AzureBlobStorage311_properties_fqdns')]"
+					},
+					"AzureDataLakeStorage494_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureDataLakeStorage494_properties_privateLinkResourceId')]"
+					},
+					"AzureDataLakeStorage494_properties_groupId": {
+						"value": "[parameters('AzureDataLakeStorage494_properties_groupId')]"
+					},
+					"AzureDataLakeStorage494_properties_fqdns": {
+						"value": "[parameters('AzureDataLakeStorage494_properties_fqdns')]"
+					},
+					"AzureDataLakeStorage573_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureDataLakeStorage573_properties_privateLinkResourceId')]"
+					},
+					"AzureDataLakeStorage573_properties_groupId": {
+						"value": "[parameters('AzureDataLakeStorage573_properties_groupId')]"
+					},
+					"AzureDataLakeStorage573_properties_fqdns": {
+						"value": "[parameters('AzureDataLakeStorage573_properties_fqdns')]"
+					},
+					"AzureDataLakeStorage923_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureDataLakeStorage923_properties_privateLinkResourceId')]"
+					},
+					"AzureDataLakeStorage923_properties_groupId": {
+						"value": "[parameters('AzureDataLakeStorage923_properties_groupId')]"
+					},
+					"AzureDataLakeStorage923_properties_fqdns": {
+						"value": "[parameters('AzureDataLakeStorage923_properties_fqdns')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'PrashanthVemula_ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "PrashanthVemula_ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage3_connectionString": {
+						"value": "[parameters('AzureBlobStorage3_connectionString')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"SqlServer3_connectionString": {
+						"value": "[parameters('SqlServer3_connectionString')]"
+					},
+					"SqlServer3_password": {
+						"value": "[parameters('SqlServer3_password')]"
+					},
+					"AzureSqlDatabase197_properties_privateLinkResourceId": {
+						"value": "[parameters('AzureSqlDatabase197_properties_privateLinkResourceId')]"
+					},
+					"AzureSqlDatabase197_properties_groupId": {
+						"value": "[parameters('AzureSqlDatabase197_properties_groupId')]"
+					},
+					"AzureSqlDatabase197_properties_fqdns": {
+						"value": "[parameters('AzureSqlDatabase197_properties_fqdns')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"SqlServer3_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServer3_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'PrashanthVemula_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "PrashanthVemula_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"trigger1_properties_pipeline6_parameters_FileName": {
+						"value": "[parameters('trigger1_properties_pipeline6_parameters_FileName')]"
+					},
+					"trigger1_properties_typeProperties_scope": {
+						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
+					},
+					"trigger2_properties_typeProperties_scope": {
+						"value": "[parameters('trigger2_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'PrashanthVemula_ArmTemplate_4')]"
+			]
+		}
+	]
+}
