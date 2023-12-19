@@ -1,5 +1,13 @@
 {
 	"name": "PrashanthVemula",
+	"properties": {
+		"globalParameters": {
+			"adfprameter": {
+				"type": "string",
+				"value": "prashanth"
+			}
+		}
+	},
 	"location": "eastus",
 	"identity": {
 		"type": "SystemAssigned,UserAssigned",
