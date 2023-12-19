@@ -1,0 +1,19 @@
+{
+	"name": "PrashanthVemula",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned,UserAssigned",
+		"principalId": "8320b485-4c72-40ae-8009-846bef9a4660",
+		"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+		"userAssignedIdentities": {
+			"/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourcegroups/prashanthdailywork/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ManagedIdentity": {
+				"clientId": "72052882-42f9-4aac-ba45-5baee86ab9b8",
+				"principalId": "0ce7918e-0186-4db1-8f71-04080a333953"
+			},
+			"/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourcegroups/prashanthdailywork/providers/Microsoft.ManagedIdentity/userAssignedIdentities/SampleManagedidentity": {
+				"clientId": "5dfa0687-251a-4af7-956d-c61407cc42e3",
+				"principalId": "f31f651a-1d00-465f-876e-3ff0b46a31c6"
+			}
+		}
+	}
+}

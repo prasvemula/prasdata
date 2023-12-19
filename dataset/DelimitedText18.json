@@ -1,0 +1,101 @@
+{
+	"name": "DelimitedText18",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage3",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "cbasbxDealSnapshots.csv",
+				"container": "tanujfile"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "PartitionKey",
+				"type": "String"
+			},
+			{
+				"name": "RowKey",
+				"type": "String"
+			},
+			{
+				"name": "Timestamp",
+				"type": "String"
+			},
+			{
+				"name": "Results",
+				"type": "String"
+			},
+			{
+				"name": "Results@type",
+				"type": "String"
+			},
+			{
+				"name": "Inputs",
+				"type": "String"
+			},
+			{
+				"name": "Inputs@type",
+				"type": "String"
+			},
+			{
+				"name": "VersionId",
+				"type": "String"
+			},
+			{
+				"name": "VersionId@type",
+				"type": "String"
+			},
+			{
+				"name": "Access",
+				"type": "String"
+			},
+			{
+				"name": "Access@type",
+				"type": "String"
+			},
+			{
+				"name": "Approval",
+				"type": "String"
+			},
+			{
+				"name": "Approval@type",
+				"type": "String"
+			},
+			{
+				"name": "Impact",
+				"type": "String"
+			},
+			{
+				"name": "Impact@type",
+				"type": "String"
+			},
+			{
+				"name": "FeeLines",
+				"type": "String"
+			},
+			{
+				"name": "FeeLines@type",
+				"type": "String"
+			},
+			{
+				"name": "RateFactors",
+				"type": "String"
+			},
+			{
+				"name": "RateFactors@type",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

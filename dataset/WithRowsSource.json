@@ -1,0 +1,50 @@
+{
+	"name": "WithRowsSource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sample2.csv",
+				"folderPath": "Input",
+				"container": "reprojsonfile"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": " \"Team\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Position\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Height(inches)\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Weight(lbs)\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Age\"",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

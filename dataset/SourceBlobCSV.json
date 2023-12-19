@@ -1,0 +1,102 @@
+{
+	"name": "SourceBlobCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ParqueetFile.csv",
+				"folderPath": "reproYuvaCase",
+				"container": "reprojsonfile"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "PreciseTimeStamp",
+				"type": "String"
+			},
+			{
+				"name": "Tenant",
+				"type": "String"
+			},
+			{
+				"name": "containerId",
+				"type": "String"
+			},
+			{
+				"name": "creationTime",
+				"type": "String"
+			},
+			{
+				"name": "containerType",
+				"type": "String"
+			},
+			{
+				"name": "nodeId",
+				"type": "String"
+			},
+			{
+				"name": "subscriptionId",
+				"type": "String"
+			},
+			{
+				"name": "billingType",
+				"type": "String"
+			},
+			{
+				"name": "CloudName",
+				"type": "String"
+			},
+			{
+				"name": "AvailabilityZone",
+				"type": "String"
+			},
+			{
+				"name": "Region",
+				"type": "String"
+			},
+			{
+				"name": "DataCenterName",
+				"type": "String"
+			},
+			{
+				"name": "priority",
+				"type": "String"
+			},
+			{
+				"name": "RegionFriendlyName",
+				"type": "String"
+			},
+			{
+				"name": "virtualMachineUniqueId",
+				"type": "String"
+			},
+			{
+				"name": "roleInstanceName",
+				"type": "String"
+			},
+			{
+				"name": "dedicatedHostId",
+				"type": "String"
+			},
+			{
+				"name": "dedicatedHostGroupId",
+				"type": "String"
+			},
+			{
+				"name": "dedicatedHostContainerPlacementType",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

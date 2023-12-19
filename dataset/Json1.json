@@ -1,0 +1,314 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ownershipjson.json",
+				"container": "replication"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"@odata.context": {
+					"type": "string"
+				},
+				"value": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"LogicalName": {
+								"type": "string"
+							},
+							"MetadataId": {
+								"type": "string"
+							},
+							"OptionSet": {
+								"type": "object",
+								"properties": {
+									"MetadataId": {
+										"type": "string"
+									},
+									"HasChanged": {
+										"type": "null"
+									},
+									"IsCustomOptionSet": {
+										"type": "boolean"
+									},
+									"IsGlobal": {
+										"type": "boolean"
+									},
+									"IsManaged": {
+										"type": "boolean"
+									},
+									"Name": {
+										"type": "string"
+									},
+									"ExternalTypeName": {
+										"type": "null"
+									},
+									"OptionSetType": {
+										"type": "string"
+									},
+									"IntroducedVersion": {
+										"type": "string"
+									},
+									"ParentOptionSetName": {
+										"type": "null"
+									},
+									"Description": {
+										"type": "object",
+										"properties": {
+											"LocalizedLabels": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"Label": {
+															"type": "string"
+														},
+														"LanguageCode": {
+															"type": "integer"
+														},
+														"IsManaged": {
+															"type": "boolean"
+														},
+														"MetadataId": {
+															"type": "string"
+														},
+														"HasChanged": {
+															"type": "null"
+														}
+													}
+												}
+											},
+											"UserLocalizedLabel": {
+												"type": "object",
+												"properties": {
+													"Label": {
+														"type": "string"
+													},
+													"LanguageCode": {
+														"type": "integer"
+													},
+													"IsManaged": {
+														"type": "boolean"
+													},
+													"MetadataId": {
+														"type": "string"
+													},
+													"HasChanged": {
+														"type": "null"
+													}
+												}
+											}
+										}
+									},
+									"DisplayName": {
+										"type": "object",
+										"properties": {
+											"LocalizedLabels": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"Label": {
+															"type": "string"
+														},
+														"LanguageCode": {
+															"type": "integer"
+														},
+														"IsManaged": {
+															"type": "boolean"
+														},
+														"MetadataId": {
+															"type": "string"
+														},
+														"HasChanged": {
+															"type": "null"
+														}
+													}
+												}
+											},
+											"UserLocalizedLabel": {
+												"type": "object",
+												"properties": {
+													"Label": {
+														"type": "string"
+													},
+													"LanguageCode": {
+														"type": "integer"
+													},
+													"IsManaged": {
+														"type": "boolean"
+													},
+													"MetadataId": {
+														"type": "string"
+													},
+													"HasChanged": {
+														"type": "null"
+													}
+												}
+											}
+										}
+									},
+									"IsCustomizable": {
+										"type": "object",
+										"properties": {
+											"Value": {
+												"type": "boolean"
+											},
+											"CanBeChanged": {
+												"type": "boolean"
+											},
+											"ManagedPropertyLogicalName": {
+												"type": "string"
+											}
+										}
+									},
+									"Options": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"Value": {
+													"type": "integer"
+												},
+												"Color": {
+													"type": "string"
+												},
+												"IsManaged": {
+													"type": "boolean"
+												},
+												"ExternalValue": {
+													"type": "string"
+												},
+												"ParentValues": {
+													"type": "array"
+												},
+												"Tag": {
+													"type": "null"
+												},
+												"MetadataId": {
+													"type": "null"
+												},
+												"HasChanged": {
+													"type": "null"
+												},
+												"Label": {
+													"type": "object",
+													"properties": {
+														"LocalizedLabels": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"Label": {
+																		"type": "string"
+																	},
+																	"LanguageCode": {
+																		"type": "integer"
+																	},
+																	"IsManaged": {
+																		"type": "boolean"
+																	},
+																	"MetadataId": {
+																		"type": "string"
+																	},
+																	"HasChanged": {
+																		"type": "null"
+																	}
+																}
+															}
+														},
+														"UserLocalizedLabel": {
+															"type": "object",
+															"properties": {
+																"Label": {
+																	"type": "string"
+																},
+																"LanguageCode": {
+																	"type": "integer"
+																},
+																"IsManaged": {
+																	"type": "boolean"
+																},
+																"MetadataId": {
+																	"type": "string"
+																},
+																"HasChanged": {
+																	"type": "null"
+																}
+															}
+														}
+													}
+												},
+												"Description": {
+													"type": "object",
+													"properties": {
+														"LocalizedLabels": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"Label": {
+																		"type": "string"
+																	},
+																	"LanguageCode": {
+																		"type": "integer"
+																	},
+																	"IsManaged": {
+																		"type": "boolean"
+																	},
+																	"MetadataId": {
+																		"type": "string"
+																	},
+																	"HasChanged": {
+																		"type": "null"
+																	}
+																}
+															}
+														},
+														"UserLocalizedLabel": {
+															"type": "object",
+															"properties": {
+																"Label": {
+																	"type": "string"
+																},
+																"LanguageCode": {
+																	"type": "integer"
+																},
+																"IsManaged": {
+																	"type": "boolean"
+																},
+																"MetadataId": {
+																	"type": "string"
+																},
+																"HasChanged": {
+																	"type": "null"
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

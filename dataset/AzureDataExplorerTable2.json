@@ -1,0 +1,93 @@
+{
+	"name": "AzureDataExplorerTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataExplorer2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureDataExplorerTable",
+		"schema": [
+			{
+				"name": "PreciseTimeStamp",
+				"type": "datetime"
+			},
+			{
+				"name": "Tenant",
+				"type": "string"
+			},
+			{
+				"name": "containerId",
+				"type": "string"
+			},
+			{
+				"name": "creationTime",
+				"type": "string"
+			},
+			{
+				"name": "containerType",
+				"type": "string"
+			},
+			{
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"name": "subscriptionId",
+				"type": "string"
+			},
+			{
+				"name": "billingType",
+				"type": "string"
+			},
+			{
+				"name": "CloudName",
+				"type": "string"
+			},
+			{
+				"name": "AvailabilityZone",
+				"type": "string"
+			},
+			{
+				"name": "Region",
+				"type": "string"
+			},
+			{
+				"name": "DataCenterName",
+				"type": "string"
+			},
+			{
+				"name": "priority",
+				"type": "string"
+			},
+			{
+				"name": "RegionFriendlyName",
+				"type": "string"
+			},
+			{
+				"name": "virtualMachineUniqueId",
+				"type": "string"
+			},
+			{
+				"name": "roleInstanceName",
+				"type": "string"
+			},
+			{
+				"name": "dedicatedHostId",
+				"type": "string"
+			},
+			{
+				"name": "dedicatedHostGroupId",
+				"type": "string"
+			},
+			{
+				"name": "dedicatedHostContainerPlacementType",
+				"type": "string"
+			}
+		],
+		"typeProperties": {
+			"table": "ReproYuvacase"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

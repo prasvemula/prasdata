@@ -1,0 +1,17 @@
+{
+	"name": "SqlServer4",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=True;data source=CDCVM;initial catalog=prasreproduce",
+			"userName": "prashanth",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0ZmZjYzljNi01MThiLTRiNzQtOWJjYy0xMmIzM2JjOGM0ODMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "SelfIRTwo",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

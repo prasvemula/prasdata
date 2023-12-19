@@ -1,0 +1,10 @@
+{
+	"name": "AzureDataLakeStorage923",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/8c2b4ab7-2c19-4a9a-a786-aee7ea4d2db3/resourceGroups/PrasDeployOne/providers/Microsoft.Storage/storageAccounts/prasdeplyone",
+		"groupId": "dfs",
+		"fqdns": [
+			"prasdeplyone.dfs.core.windows.net"
+		]
+	}
+}

@@ -1,0 +1,57 @@
+{
+	"name": "dataflow5",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText18",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText19",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          PartitionKey as string,",
+				"          RowKey as string,",
+				"          Timestamp as string,",
+				"          Results as string,",
+				"          {Results@type} as string,",
+				"          Inputs as string,",
+				"          {Inputs@type} as string,",
+				"          VersionId as string,",
+				"          {VersionId@type} as string,",
+				"          Access as string,",
+				"          {Access@type} as string,",
+				"          Approval as string,",
+				"          {Approval@type} as string,",
+				"          Impact as string,",
+				"          {Impact@type} as string,",
+				"          FeeLines as string,",
+				"          {FeeLines@type} as string,",
+				"          RateFactors as string,",
+				"          {RateFactors@type} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

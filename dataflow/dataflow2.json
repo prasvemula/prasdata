@@ -1,0 +1,36 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SourceWithZerRows",
+						"type": "DatasetReference"
+					},
+					"name": "SampleSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SinkFile",
+						"type": "DatasetReference"
+					},
+					"name": "Sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SampleSource",
+				"SampleSource sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Sink1"
+			]
+		}
+	}
+}

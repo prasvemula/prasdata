@@ -1,0 +1,57 @@
+{
+	"name": "ReproJsonDF",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ReproSampleJson",
+						"type": "DatasetReference"
+					},
+					"name": "ReproJsonSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SinkDFReproJson",
+						"type": "DatasetReference"
+					},
+					"name": "SinkDatasetJsonRepro"
+				}
+			],
+			"transformations": [
+				{
+					"name": "RankOfColumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Month as string,",
+				"          { \"Average\"} as string,",
+				"          { \"2005\"} as string,",
+				"          { \"2006\"} as string,",
+				"          { \"2007\"} as string,",
+				"          { \"2008\"} as string,",
+				"          { \"2009\"} as string,",
+				"          { \"2010\"} as string,",
+				"          { \"2011\"} as string,",
+				"          { \"2012\"} as string,",
+				"          { \"2013\"} as string,",
+				"          { \"2014\"} as string,",
+				"          { \"2015\"} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ReproJsonSource",
+				"ReproJsonSource rank(asc(Month, true),",
+				"     output({1} as long)) ~> RankOfColumn",
+				"RankOfColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SinkDatasetJsonRepro"
+			]
+		}
+	}
+}

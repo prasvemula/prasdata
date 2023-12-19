@@ -1,0 +1,97 @@
+{
+	"name": "ReproJsonOne",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "WithRowsSource",
+						"type": "DatasetReference"
+					},
+					"name": "WithRows"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SinkWithRows",
+						"type": "DatasetReference"
+					},
+					"name": "SinkAgeAbove20"
+				},
+				{
+					"dataset": {
+						"referenceName": "SinkBetween18to20",
+						"type": "DatasetReference"
+					},
+					"name": "SinkBetween18to20"
+				},
+				{
+					"dataset": {
+						"referenceName": "SinkWithBelow18",
+						"type": "DatasetReference"
+					},
+					"name": "SinkWithBelow18"
+				}
+			],
+			"transformations": [
+				{
+					"name": "rank1"
+				},
+				{
+					"name": "AgeByNumber"
+				},
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "SortingData"
+				},
+				{
+					"name": "SortDataBelow18Age"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Name as string,",
+				"          { \"Team\"} as string,",
+				"          { \"Position\"} as string,",
+				"          { \"Height(inches)\"} as integer,",
+				"          { \"Weight(lbs)\"} as integer,",
+				"          { \"Age\"} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 100,",
+				"     ignoreNoFilesFound: false) ~> WithRows",
+				"WithRows rank(asc({ \"Age\"}, true),",
+				"     output(RankWithAge as long)) ~> rank1",
+				"rank1 split({ \"Age\"}>20,",
+				"     between({ \"Age\"}, 18, 20),",
+				"     disjoint: false) ~> AgeByNumber@(AgeAbove20, AgeBetween18to20, AgeBelow18)",
+				"AgeByNumber@AgeBetween18to20 sort(asc(RankWithAge, true),",
+				"     caseInsensitive: true,",
+				"     partitionLevel: true) ~> sort1",
+				"AgeByNumber@AgeAbove20 sort(asc(RankWithAge, true),",
+				"     caseInsensitive: true,",
+				"     partitionLevel: true) ~> SortingData",
+				"AgeByNumber@AgeBelow18 sort(asc(RankWithAge, true),",
+				"     caseInsensitive: true,",
+				"     partitionLevel: true) ~> SortDataBelow18Age",
+				"SortingData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SinkAgeAbove20",
+				"sort1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SinkBetween18to20",
+				"SortDataBelow18Age sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SinkWithBelow18"
+			]
+		}
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"name": "AzureDataExplorer2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDataExplorer",
+		"typeProperties": {
+			"endpoint": "https://praskusto.eastus.kusto.windows.net",
+			"database": "yuvacase"
+		}
+	}
+}

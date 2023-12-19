@@ -1,0 +1,17 @@
+{
+	"name": "BlobToOnPremSql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SelfHostedSQLServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "BlobCsvFile"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
