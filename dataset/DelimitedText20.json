@@ -1,0 +1,56 @@
+{
+	"name": "DelimitedText20",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage5",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"InputValue": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().InputValue",
+					"type": "Expression"
+				},
+				"container": "test"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": " \"Team\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Position\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Height(inches)\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Weight(lbs)\"",
+				"type": "String"
+			},
+			{
+				"name": " \"Age\"",
+				"type": "String"
+			}
+		]
+	}
+}
