@@ -1,0 +1,16 @@
+{
+	"name": "ls_prd_prod",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "MySql",
+		"typeProperties": {
+			"connectionString": "server=prd-prod-db-replica.mysql.database.azure.com;port=3306;database=prd;user=proddbadmin@prd-prod-db-replica;sslmode=1;usesystemtruststore=0",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3YjViYzc2Mi05MDIzLTQxMmYtYWIwYS0wNmRhY2ZlNjAwOGUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "ir-MPI-JUMPHOST-VM",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

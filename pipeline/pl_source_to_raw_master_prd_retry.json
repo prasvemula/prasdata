@@ -1,0 +1,116 @@
+{
+	"name": "pl_source_to_raw_master_prd_retry",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "Check no of retry",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@activity('Check no of retry').output.firstRow.retry_stat",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "retry",
+							"activities": [
+								{
+									"name": "Execute Pipeline1",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_source_to_raw_master_prd_retry_start",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Check no of retry",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select\r\nServer_Name,\r\ncase when No_of_Retries > 3 then 'max_retry'\r\nelse 'retry'\r\nend as retry_stat\r\nfrom pipeline_failed_ingestion\r\nwhere Server_Name='PNAS'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azuresqldb_bulk",
+						"type": "DatasetReference",
+						"parameters": {
+							"schemaName": "dbo",
+							"tableName": "pipeline_failed_ingestion"
+						}
+					}
+				}
+			}
+		],
+		"variables": {
+			"var_current_pipeline_date": {
+				"type": "String"
+			},
+			"var_source_schema": {
+				"type": "String"
+			},
+			"var_table_name": {
+				"type": "String"
+			},
+			"var_process_type": {
+				"type": "String"
+			},
+			"var_load_frequency": {
+				"type": "String"
+			},
+			"var_pipeline_date": {
+				"type": "String"
+			},
+			"var_pipeline_status": {
+				"type": "String"
+			},
+			"var_watermark_column": {
+				"type": "String"
+			},
+			"var_watermark_value": {
+				"type": "String"
+			},
+			"var_server_name": {
+				"type": "String"
+			},
+			"config_id": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Datalake Ingestion/PNAS/PNAS_prd/retry"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-22T09:39:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

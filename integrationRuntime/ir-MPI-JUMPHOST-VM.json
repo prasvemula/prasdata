@@ -1,0 +1,6 @@
+{
+	"name": "ir-MPI-JUMPHOST-VM",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
