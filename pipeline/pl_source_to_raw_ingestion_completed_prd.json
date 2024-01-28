@@ -1,0 +1,215 @@
+{
+	"name": "pl_source_to_raw_ingestion_completed_prd",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Pipeline Status",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[dbo].[sp_CheckPipelineStatus]",
+						"storedProcedureParameters": {
+							"dt_today": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.param_current_pipeline_date",
+									"type": "Expression"
+								}
+							},
+							"server_name": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.param_server_name",
+									"type": "Expression"
+								}
+							},
+							"source_schema": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.param_source_schema",
+									"type": "Expression"
+								}
+							},
+							"table_name": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.param_table_name",
+									"type": "Expression"
+								}
+							},
+							"config_id": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.param_config_id",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azuresqldb_bulk",
+						"type": "DatasetReference",
+						"parameters": {
+							"schemaName": "dbo",
+							"tableName": "pipeline_config"
+						}
+					}
+				}
+			},
+			{
+				"name": "Switch",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "Get Pipeline Status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@activity('Get Pipeline Status').output.firstRow.check_status",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "1",
+							"activities": [
+								{
+									"name": "do not skip",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								},
+								{
+									"name": "Execute failed child pipeline",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "do not skip",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_source_to_raw_ingestion_failed_prd",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"param_server_name": {
+												"value": "@pipeline().parameters.param_server_name",
+												"type": "Expression"
+											},
+											"param_source_schema": {
+												"value": "@pipeline().parameters.param_source_schema",
+												"type": "Expression"
+											},
+											"param_table_name": {
+												"value": "@pipeline().parameters.param_table_name",
+												"type": "Expression"
+											},
+											"param_watermark_column": {
+												"value": "@pipeline().parameters.param_watermark_column",
+												"type": "Expression"
+											},
+											"param_watermark_value": {
+												"value": "@pipeline().parameters.param_watermark_value",
+												"type": "Expression"
+											},
+											"param_pipeline_status": {
+												"value": "@pipeline().parameters.param_pipeline_status",
+												"type": "Expression"
+											},
+											"param_process_type": {
+												"value": "@pipeline().parameters.param_process_type",
+												"type": "Expression"
+											},
+											"param_current_pipeline_date": {
+												"value": "@pipeline().parameters.param_current_pipeline_date",
+												"type": "Expression"
+											},
+											"param_config_id": {
+												"value": "@pipeline().parameters.param_config_id",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "0",
+							"activities": [
+								{
+									"name": "skip",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"param_server_name": {
+				"type": "string"
+			},
+			"param_source_schema": {
+				"type": "string"
+			},
+			"param_table_name": {
+				"type": "string"
+			},
+			"param_watermark_column": {
+				"type": "string"
+			},
+			"param_watermark_value": {
+				"type": "string"
+			},
+			"param_pipeline_status": {
+				"type": "string"
+			},
+			"param_process_type": {
+				"type": "string"
+			},
+			"param_current_pipeline_date": {
+				"type": "string"
+			},
+			"param_config_id": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Datalake Ingestion/PNAS/PNAS_prd"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-10-26T09:50:50Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,411 @@
+{
+	"name": "pl_source_to_raw_master_prd_retry_start",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set Current Pipeline Date",
+				"description": "",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "var_current_pipeline_date",
+					"value": {
+						"value": "@concat(formatDateTime(utcnow(),'yyyy'),'-',formatDateTime(utcnow(),'MM'),'-',formatDateTime(utcnow(),'dd'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get Tables",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Set Current Pipeline Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select \nconfig_id, \nsource_type,\nserver_name, \nsource_schema,\ntable_name, \nprocess_type, \nload_frequency, \nisnull(pipeline_date, '1900-01-01') as pipeline_date, \npipeline_status, \nlatest_lake_folder,\nwatermark_column, \ndateadd(day,-1,watermark_value) as watermark_value\nfrom dbo.pipeline_config \nwhere server_name = 'PRD'\nand table_name in (\n'CITIES'\n,'ACCREDITATION_HISTORY'\n,'AFFILIATION_REFERRAL_METHOD'\n,'ASSOCIATED_PHYSICIAN'\n,'DENTIST_KAMUSTAHAN'\n,'DOCUMENT_TYPE'\n,'HEALTH_FACILITY_KAMUSTAHAN'\n,'HEALTH_FACILITY_KAMUSTAHAN_CREDENTIALS'\n,'HF'\n,'HF_ACCREDITATION_CHECKLIST'\n,'PACKAGE'\n,'PHY'\n,'PHY_HEALTH_FACILITY_AFFILIATION'\n,'PHY_REQUIREMENT_LIST'\n,'PHY_REQUIREMENT_LIST_PAGE'\n,'PHY_SCHEDULE'\n,'PHY_SCHEDULE_COMPONENT'\n,'PHY_SUBSPEC_CERT'\n,'PHYSICIAN_KAMUSTAHAN'\n,'PHYSICIAN_KAMUSTAHAN_SCHEDULES'\n,'PROVINCES'\n,'REGIONS'\n,'HF_DOCUMENT_LIST'\n,'HF_CATEGORY'\n,'HF_CONTACT_DETAIL'\n,'HF_COORDINATOR'\n,'HF_CREDENTIAL_LIST'\n,'HF_DOCUMENT_LIST_PAGE'\n,'SPECIAL_ARRANGEMENT'\n,'SPECIALIZATION'\n,'SUBSPECIALIZATION'\n,'TEXT_TEMPLATE'\n)\nand pipeline_status='failed'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azuresqldb_bulk",
+						"type": "DatasetReference",
+						"parameters": {
+							"schemaName": "prd",
+							"tableName": "pipeline_config"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Copy Each Table",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Tables').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set process_type",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set config_id",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_process_type",
+								"value": {
+									"value": "@item().process_type",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set server_name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set process_type",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_server_name",
+								"value": {
+									"value": "@item().server_name",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set source_schema",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set server_name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_source_schema",
+								"value": {
+									"value": "@item().source_schema",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set table_name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set source_schema",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_table_name",
+								"value": {
+									"value": "@item().table_name",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set pipeline_date",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set table_name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_pipeline_date",
+								"value": {
+									"value": "@substring(item().pipeline_date, 0, 10)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set pipeline_status",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set pipeline_date",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_pipeline_status",
+								"value": {
+									"value": "@item().pipeline_status",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set watermark_column",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set pipeline_status",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_watermark_column",
+								"value": {
+									"value": "@item().watermark_column",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set watermark_value",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set watermark_column",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "var_watermark_value",
+								"value": {
+									"value": "@item().watermark_value",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Switch",
+							"type": "Switch",
+							"dependsOn": [
+								{
+									"activity": "Set watermark_value",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@variables('var_pipeline_status')",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "Failed",
+										"activities": [
+											{
+												"name": "Execute failed child pipeline",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "pl_source_to_raw_ingestion_failed_prd",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"param_server_name": {
+															"value": "@variables('var_server_name')",
+															"type": "Expression"
+														},
+														"param_source_schema": {
+															"value": "@variables('var_source_schema')",
+															"type": "Expression"
+														},
+														"param_table_name": {
+															"value": "@variables('var_table_name')",
+															"type": "Expression"
+														},
+														"param_watermark_column": {
+															"value": "@variables('var_watermark_column')",
+															"type": "Expression"
+														},
+														"param_watermark_value": {
+															"value": "@variables('var_watermark_value')",
+															"type": "Expression"
+														},
+														"param_pipeline_status": {
+															"value": "@variables('var_pipeline_status')",
+															"type": "Expression"
+														},
+														"param_process_type": {
+															"value": "@variables('var_process_type')",
+															"type": "Expression"
+														},
+														"param_current_pipeline_date": {
+															"value": "@variables('var_current_pipeline_date')",
+															"type": "Expression"
+														},
+														"param_config_id": {
+															"value": "@variables('config_id')",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"name": "Set config_id",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "config_id",
+								"value": {
+									"value": "@string(item().config_id)",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"var_current_pipeline_date": {
+				"type": "String"
+			},
+			"var_source_schema": {
+				"type": "String"
+			},
+			"var_table_name": {
+				"type": "String"
+			},
+			"var_process_type": {
+				"type": "String"
+			},
+			"var_load_frequency": {
+				"type": "String"
+			},
+			"var_pipeline_date": {
+				"type": "String"
+			},
+			"var_pipeline_status": {
+				"type": "String"
+			},
+			"var_watermark_column": {
+				"type": "String"
+			},
+			"var_watermark_value": {
+				"type": "String"
+			},
+			"var_server_name": {
+				"type": "String"
+			},
+			"config_id": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Datalake Ingestion/PNAS/PNAS_prd/retry"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-22T08:57:04Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

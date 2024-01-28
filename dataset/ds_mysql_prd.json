@@ -1,0 +1,30 @@
+{
+	"name": "ds_mysql_prd",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_prd_prod",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"table_name": {
+				"type": "string"
+			},
+			"source_schema": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "PNAS/PNAS_prd"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().table_name",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

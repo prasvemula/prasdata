@@ -1,0 +1,1069 @@
+{
+	"name": "pl_source_to_raw_ingestion_failed_prd",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Switch",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "Wait",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.param_process_type",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "full",
+							"activities": [
+								{
+									"name": "full",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								},
+								{
+									"name": "Clean up full",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "full",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adls_raw_folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@concat(pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Copy data full",
+									"description": "",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Clean up full",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MySqlSource",
+											"query": {
+												"value": "@concat('select * from ',pipeline().parameters.param_source_schema,'.',pipeline().parameters.param_table_name,'')",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_mysql_prd",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": {
+													"value": "@pipeline().parameters.param_table_name",
+													"type": "Expression"
+												},
+												"source_schema": {
+													"value": "@pipeline().parameters.param_source_schema",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adls_raw",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@concat(pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "full Success",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Copy data full",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"parameters": [
+													{
+														"name": "pipeline_date",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_current_pipeline_date",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "latest_lake_folder",
+														"type": "String",
+														"value": {
+															"value": "@concat('raw/',pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "server_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_server_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "source_schema",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_source_schema",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "table_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_table_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "config_id",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_config_id",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													}
+												],
+												"type": "NonQuery",
+												"text": "update dbo.pipeline_config set pipeline_date = @pipeline_date, pipeline_status = 'Completed', latest_lake_folder = @latest_lake_folder \nwhere server_name = @server_name and source_schema = @source_schema and table_name = @table_name and config_id = @config_id"
+											}
+										]
+									}
+								},
+								{
+									"name": "full Failed",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Copy data full",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"parameters": [
+													{
+														"name": "pipeline_date",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_current_pipeline_date",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "server_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_server_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "source_schema",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_source_schema",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "table_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_table_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "config_id",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_config_id",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													}
+												],
+												"type": "NonQuery",
+												"text": "update dbo.pipeline_config set pipeline_date = @pipeline_date, pipeline_status = 'Failed' \nwhere server_name = @server_name and source_schema = @source_schema and table_name = @table_name and config_id = @config_id"
+											}
+										]
+									}
+								},
+								{
+									"name": "update full Pipeline log",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "full Success",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[dbo].[sp_UpdatePipelineLog]",
+										"storedProcedureParameters": {
+											"copyactivity_end_time": {
+												"value": {
+													"value": "@utcNow()",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"copyactivity_start_time": {
+												"value": {
+													"value": "@activity('Copy data full').output.executionDetails[0].start",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"data_read": {
+												"value": {
+													"value": "@activity('Copy data full').output.rowsRead",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"lake_folder": {
+												"value": {
+													"value": "@concat('raw/',pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"rows_copied": {
+												"value": {
+													"value": "@activity('Copy data full').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"server_name": {
+												"value": {
+													"value": "@pipeline().parameters.param_server_name",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"source_schema": {
+												"value": {
+													"value": "@pipeline().parameters.param_source_schema",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"table_name": {
+												"value": {
+													"value": "@pipeline().parameters.param_table_name",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"config_id": {
+												"value": {
+													"value": "@pipeline().parameters.param_config_id",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Retry",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Update Status - failed",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_source_to_raw_master_prd_retry",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								},
+								{
+									"name": "Update Status - failed",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "full Failed",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": ";with cte_get_Retries as (\r\nselect Server_Name,No_of_Retries,pipeline_type\r\nfrom pipeline_failed_ingestion\r\nwhere Server_Name='PNAS'\r\n)\r\n\r\nupdate a\r\nset a.Ingestion_Status='failed',\r\na.Date_failed=CAST(CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'Singapore Standard Time' AS DATETIME),\r\na.No_of_Retries=isnull(b.No_of_Retries,0) + 1\r\nfrom pipeline_failed_ingestion a\r\nleft join cte_get_Retries b\r\non a.Server_Name=b.Server_Name\r\nwhere a.Server_Name='PNAS'"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Update Status",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "update full Pipeline log",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "update pipeline_failed_ingestion\r\nset Ingestion_Status='Succeeded',\r\nNo_of_Retries=null,\r\nDate_Succeeded=CAST(CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'Singapore Standard Time' AS DATETIME)\r\nwhere Server_Name='PNAS'"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						},
+						{
+							"value": "delta",
+							"activities": [
+								{
+									"name": "delta",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								},
+								{
+									"name": "Clean up delta",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "delta",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adls_raw_folder",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@concat(pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'), '/', pipeline().parameters.param_watermark_column)",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Copy data delta",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Clean up delta",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MySqlSource",
+											"query": {
+												"value": "@concat('select * from ',pipeline().parameters.param_source_schema,'.',pipeline().parameters.param_table_name,' where ',pipeline().parameters.param_watermark_column, ' > ''' ,pipeline().parameters.param_watermark_value,'''')",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_mysql_prd",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": {
+													"value": "@pipeline().parameters.param_table_name",
+													"type": "Expression"
+												},
+												"source_schema": {
+													"value": "@pipeline().parameters.param_source_schema",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adls_raw",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@concat(pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'), '/', pipeline().parameters.param_watermark_column)",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Get Latest Watermark Value",
+									"type": "Lookup",
+									"dependsOn": [
+										{
+											"activity": "Copy data delta",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MySqlSource",
+											"query": {
+												"value": "@concat('SELECT \nCASE WHEN MAX(',pipeline().parameters.param_watermark_column, ')',' > current_date() THEN DATE_ADD(current_date(), INTERVAL -1 DAY) ELSE MAX(',pipeline().parameters.param_watermark_column, ') END AS new_watermark_value from ',pipeline().parameters.param_source_schema,'.',pipeline().parameters.param_table_name)",
+												"type": "Expression"
+											}
+										},
+										"dataset": {
+											"referenceName": "ds_mysql_prd",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": {
+													"value": "@pipeline().parameters.param_table_name",
+													"type": "Expression"
+												},
+												"source_schema": {
+													"value": "@pipeline().parameters.param_source_schema",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								},
+								{
+									"name": "delta Success",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Get Latest Watermark Value",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"parameters": [
+													{
+														"name": "pipeline_date",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_current_pipeline_date",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "latest_lake_folder",
+														"type": "String",
+														"value": {
+															"value": "@concat('raw/',pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "new_watermark_value",
+														"type": "String",
+														"value": {
+															"value": "@activity('Get Latest Watermark Value').output.firstRow.new_watermark_value",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "server_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_server_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "source_schema",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_source_schema",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "table_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_table_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "config_id",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_config_id",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													}
+												],
+												"type": "NonQuery",
+												"text": "update dbo.pipeline_config set pipeline_date = @pipeline_date, pipeline_status = 'Completed', latest_lake_folder = @latest_lake_folder, watermark_value = @new_watermark_value  \nwhere server_name = @server_name and source_schema = @source_schema and table_name = @table_name and config_id = @config_id"
+											}
+										]
+									}
+								},
+								{
+									"name": "delta Failed",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Copy data delta",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"parameters": [
+													{
+														"name": "pipeline_date",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_current_pipeline_date",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "server_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_server_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "source_schema",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_source_schema",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "table_name",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_table_name",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													},
+													{
+														"name": "config_id",
+														"type": "String",
+														"value": {
+															"value": "@pipeline().parameters.param_config_id",
+															"type": "Expression"
+														},
+														"direction": "Input"
+													}
+												],
+												"type": "NonQuery",
+												"text": "update dbo.pipeline_config set pipeline_date = @pipeline_date, pipeline_status = 'Failed' \nwhere server_name = @server_name and source_schema = @source_schema and table_name = @table_name and config_id = @config_id"
+											}
+										]
+									}
+								},
+								{
+									"name": "update delta Pipeline log",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "delta Success",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[dbo].[sp_UpdatePipelineLog]",
+										"storedProcedureParameters": {
+											"copyactivity_end_time": {
+												"value": {
+													"value": "@utcNow()",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"copyactivity_start_time": {
+												"value": {
+													"value": "@activity('Copy data delta').output.executionDetails[0].start",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"data_read": {
+												"value": {
+													"value": "@activity('Copy data delta').output.rowsRead",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"lake_folder": {
+												"value": {
+													"value": "@concat('raw/',pipeline().parameters.param_server_name,'/',pipeline().parameters.param_table_name,'/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"rows_copied": {
+												"value": {
+													"value": "@activity('Copy data delta').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"server_name": {
+												"value": {
+													"value": "@pipeline().parameters.param_server_name",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"source_schema": {
+												"value": {
+													"value": "@pipeline().parameters.param_source_schema",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"table_name": {
+												"value": {
+													"value": "@pipeline().parameters.param_table_name",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"config_id": {
+												"value": {
+													"value": "@pipeline().parameters.param_config_id",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Retry_copy1",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Update Status - failed_copy1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pl_source_to_raw_master_prd_retry",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true
+									}
+								},
+								{
+									"name": "Update Status - failed_copy1",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "delta Failed",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": ";with cte_get_Retries as (\r\nselect Server_Name,No_of_Retries,pipeline_type\r\nfrom pipeline_failed_ingestion\r\nwhere Server_Name='PNAS'\r\n)\r\n\r\nupdate a\r\nset a.Ingestion_Status='failed',\r\na.Date_failed=CAST(CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'Singapore Standard Time' AS DATETIME),\r\na.No_of_Retries=isnull(b.No_of_Retries,0) + 1\r\nfrom pipeline_failed_ingestion a\r\nleft join cte_get_Retries b\r\non a.Server_Name=b.Server_Name\r\nwhere a.Server_Name='PNAS'"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Update Status_copy1",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "update delta Pipeline log",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "ls_azure_sqldb_bulk",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "update pipeline_failed_ingestion\r\nset Ingestion_Status='Succeeded',\r\nNo_of_Retries=null,\r\nDate_Succeeded=CAST(CURRENT_TIMESTAMP AT TIME ZONE 'UTC' AT TIME ZONE 'Singapore Standard Time' AS DATETIME)\r\nwhere Server_Name='PNAS'"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"param_server_name": {
+				"type": "string"
+			},
+			"param_source_schema": {
+				"type": "string"
+			},
+			"param_table_name": {
+				"type": "string"
+			},
+			"param_watermark_column": {
+				"type": "string"
+			},
+			"param_watermark_value": {
+				"type": "string"
+			},
+			"param_pipeline_status": {
+				"type": "string"
+			},
+			"param_process_type": {
+				"type": "string"
+			},
+			"param_current_pipeline_date": {
+				"type": "string"
+			},
+			"param_config_id": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Datalake Ingestion/PNAS/PNAS_prd"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-22T19:32:27Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
